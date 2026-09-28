@@ -50,17 +50,20 @@ fn test_propose_and_accept_before_expiry_succeeds() {
         li.timestamp = 1000;
     });
 
-    client.propose_oracle_rotation(&new_oracle, &3600);
+    // Propose with expiry delay of 7200 seconds (2 hours)
+    // MIN_ROTATION_DELAY_SECONDS is 3600 (1 hour)
+    client.propose_oracle_rotation(&new_oracle, &7200);
 
     let proposal = client
         .get_oracle_rotation_proposal()
         .expect("proposal should exist");
     assert_eq!(proposal.new_oracle, new_oracle);
     assert_eq!(proposal.proposed_at, 1000);
-    assert_eq!(proposal.expires_at, 4600);
+    assert_eq!(proposal.expires_at, 8200);
 
     env.ledger().with_mut(|li| {
-        li.timestamp = 2000;
+        // Advance 4000 seconds (past 1 hour delay, before 2 hour expiry)
+        li.timestamp = 5000;
     });
 
     client.accept_oracle_rotation();
@@ -206,7 +209,7 @@ fn test_propose_and_accept_emits_events() {
         li.timestamp = 1000;
     });
 
-    client.propose_oracle_rotation(&new_oracle, &3600);
+    client.propose_oracle_rotation(&new_oracle, &7200);
 
     let events = env.events().all();
     assert!(
@@ -215,7 +218,7 @@ fn test_propose_and_accept_emits_events() {
     );
 
     env.ledger().with_mut(|li| {
-        li.timestamp = 2000;
+        li.timestamp = 5000;
     });
 
     client.accept_oracle_rotation();

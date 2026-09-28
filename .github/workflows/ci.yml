@@ -143,6 +143,17 @@ jobs:
       - name: Build contract (release)
         run: cargo rustc --manifest-path=contracts/Cargo.toml --crate-type=cdylib --target=wasm32v1-none --release --locked
 
+      - name: Install Stellar CLI (for optimization)
+        run: |
+          wget -q https://github.com/stellar/stellar-cli/releases/download/v3.0.0/stellar-cli-3.0.0-x86_64-unknown-linux-gnu.tar.gz
+          tar -xzf stellar-cli-3.0.0-x86_64-unknown-linux-gnu.tar.gz
+          sudo mv stellar-cli-3.0.0-x86_64-unknown-linux-gnu/stellar /usr/local/bin/
+
+      - name: Optimize WASM
+        run: |
+          stellar contract optimize --wasm target/wasm32v1-none/release/xelma_contract.wasm
+          mv target/wasm32v1-none/release/xelma_contract.optimized.wasm target/wasm32v1-none/release/xelma_contract.wasm
+
       - name: Check WASM artifact exists
         run: |
           if [ ! -f "target/wasm32v1-none/release/xelma_contract.wasm" ]; then
