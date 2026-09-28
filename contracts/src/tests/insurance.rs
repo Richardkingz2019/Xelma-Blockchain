@@ -78,7 +78,7 @@ fn resolve_at(
         price: final_price,
         timestamp: env.ledger().timestamp(),
         round_id: round.start_ledger,
-        nonce: round.start_ledger + 1,
+        nonce: (round.start_ledger as u64) + 1,
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
