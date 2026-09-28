@@ -135,7 +135,7 @@ fn fee_zero_both_models_produce_identical_updown() {
     client.place_bet(&charlie2, &5, &BetSide::Down);
     set_fee_model_now(&env, &contract_id, FeeModel::FeeOnWinnings);
 
-    env.ledger().with_mut(|li| li.sequence_number = 13);
+    env.ledger().with_mut(|li| li.sequence_number = 24);
     let treasury_before2 = client.get_protocol_fee_treasury();
     resolve_at(&env, &client, &contract_id, 2_000u128);
 
@@ -188,7 +188,7 @@ fn fee_zero_both_models_produce_identical_precision() {
     client.place_precision_prediction(&bob2, &30, &1_100u128);
     set_fee_model_now(&env, &contract_id, FeeModel::FeeOnWinnings);
 
-    env.ledger().with_mut(|li| li.sequence_number = 13);
+    env.ledger().with_mut(|li| li.sequence_number = 24);
     let treasury_before2 = client.get_protocol_fee_treasury();
     resolve_at(&env, &client, &contract_id, 1_006u128);
 

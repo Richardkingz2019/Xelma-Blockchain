@@ -69,11 +69,16 @@ fn resolve_at(
     let round = client
         .get_active_round()
         .expect("active round required to resolve");
+    env.ledger().with_mut(|li| {
+        if li.sequence_number < round.end_ledger {
+            li.sequence_number = round.end_ledger;
+        }
+    });
     client.resolve_round(&OraclePayload {
         price: final_price,
         timestamp: env.ledger().timestamp(),
         round_id: round.start_ledger,
-        nonce: 1u64,
+        nonce: round.start_ledger + 1,
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,

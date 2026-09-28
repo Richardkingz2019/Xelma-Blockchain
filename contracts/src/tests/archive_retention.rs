@@ -36,11 +36,11 @@ fn create_and_resolve_round(
 
     env.ledger().with_mut(|li| {
         li.sequence_number = start_ledger + 100;
-        li.timestamp = 2000;
+        li.timestamp = 1060;
     });
     client.resolve_round(&OraclePayload {
         price: 2_0000000,
-        timestamp: 1800,
+        timestamp: 1060,
         round_id: start_ledger,
         nonce,
         network_id: env.ledger().network_id(),
@@ -303,11 +303,11 @@ fn test_user_archived_participation_returns_none_after_prune() {
 
     env.ledger().with_mut(|li| {
         li.sequence_number = 100;
-        li.timestamp = 2000;
+        li.timestamp = 1060;
     });
     client.resolve_round(&OraclePayload {
         price: 2_0000000,
-        timestamp: 1800,
+        timestamp: 1060,
         round_id: 0,
         nonce: 0,
         network_id: env.ledger().network_id(),

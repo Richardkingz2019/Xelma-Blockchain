@@ -89,10 +89,10 @@ fn test_accept_after_expiry_fails() {
         li.timestamp = 500;
     });
 
-    client.propose_oracle_rotation(&new_oracle, &300);
+    client.propose_oracle_rotation(&new_oracle, &3600);
 
     env.ledger().with_mut(|li| {
-        li.timestamp = 1000;
+        li.timestamp = 5000;
     });
 
     let result = client.try_accept_oracle_rotation();
@@ -242,10 +242,10 @@ fn test_accept_after_expiry_emits_expired_event() {
         li.timestamp = 500;
     });
 
-    client.propose_oracle_rotation(&new_oracle, &300);
+    client.propose_oracle_rotation(&new_oracle, &3600);
 
     env.ledger().with_mut(|li| {
-        li.timestamp = 1000;
+        li.timestamp = 5000;
     });
 
     let _ = client.try_accept_oracle_rotation();
