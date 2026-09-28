@@ -12,7 +12,7 @@
 #
 # asserting balances and on-chain events at each step. It exists to catch
 # deploy/auth/RPC-integration failures that in-memory unit tests cannot see
-# (see issue #247) — e.g. it caught that `wasm32-unknown-unknown` builds on
+# (see issue #247) — e.g. it caught that `wasm32v1-none` builds on
 # modern Rust toolchains enable wasm `reference-types` by default, producing
 # a WASM module the Soroban host rejects at deploy time (see COMPATIBILITY
 # note in contracts build config / CI for the fix: build with the
