@@ -1,3 +1,4 @@
+﻿// SPDX-License-Identifier: MIT
 use super::*;
 
 #[test]
@@ -115,7 +116,7 @@ fn test_precision_payout_conservation_two_way_tie_remainder() {
     client.mint_initial(&alice);
     client.mint_initial(&bob);
 
-    // Total pot 101 — not evenly divisible by 2
+    // Total pot 101 â€” not evenly divisible by 2
     let total_pot: i128 = 101_0000001;
     env.as_contract(&contract_id, || {
         let mut predictions = Map::<Address, PrecisionPrediction>::new(&env);

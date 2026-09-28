@@ -1,12 +1,13 @@
+﻿// SPDX-License-Identifier: MIT
 // ============================================================================
 // These tests exercise the optional protocol fee: default (ProtocolFeeBps
 // storage key absent) is byte-for-byte the pre-#162 behaviour; activating
 // the fee routes `fee = total_pot * bps / 10_000` to the on-chain treasury
 // while preserving the conservation invariant
-//     Σ payouts + treasury_growth == total_pot
+//     Î£ payouts + treasury_growth == total_pot
 // for every competitive settlement path (UpDown indexed/legacy, Precision
 // indexed/legacy). Refund paths (price-unchanged, one-sided, min-participants,
-// admin cancel) MUST NOT emit a fee event — and the treasury MUST stay flat.
+// admin cancel) MUST NOT emit a fee event â€” and the treasury MUST stay flat.
 //
 // The 10% hard cap is enforced at schedule time; timelock semantics tested
 // in `config_timelock.rs::test_protocol_fee_timelock_*`.

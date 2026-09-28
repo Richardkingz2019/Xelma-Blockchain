@@ -1,3 +1,4 @@
+﻿// SPDX-License-Identifier: MIT
 use super::*;
 
 #[test]
@@ -70,7 +71,7 @@ fn test_min_participants_allows_settlement_at_threshold() {
         li.sequence_number = 12;
     });
 
-    // Resolve with higher price → user1 (Up) wins the pot
+    // Resolve with higher price â†’ user1 (Up) wins the pot
     client.resolve_round(&OraclePayload {
         price: 1_5000000,
         timestamp: env.ledger().timestamp(),
@@ -244,7 +245,7 @@ fn test_no_min_participants_threshold_resolves_normally() {
         confidence: None,
         attestation: None,    });
 
-    // Price went up but winning_pool (Up) = 100, losing_pool (Down) = 0 → payout = 100 + 0 = 100
+    // Price went up but winning_pool (Up) = 100, losing_pool (Down) = 0 â†’ payout = 100 + 0 = 100
     assert_eq!(client.get_pending_winnings(&user1), 100_0000000);
     assert_eq!(client.get_active_round(), None);
 }

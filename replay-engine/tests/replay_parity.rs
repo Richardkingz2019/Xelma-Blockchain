@@ -151,17 +151,19 @@ fn arb_precision_transcript() -> impl Strategy<Value = RoundTranscript> {
             let participants: Vec<TranscriptParticipant> = rows
                 .into_iter()
                 .enumerate()
-                .map(|(index, (amount, predicted_price, revealed))| TranscriptParticipant {
-                    index,
-                    address: None,
-                    amount,
-                    side_up: None,
-                    commit_reveal: CommitRevealRecord {
-                        commit_hash_hex: None,
-                        revealed,
-                        predicted_price,
+                .map(
+                    |(index, (amount, predicted_price, revealed))| TranscriptParticipant {
+                        index,
+                        address: None,
+                        amount,
+                        side_up: None,
+                        commit_reveal: CommitRevealRecord {
+                            commit_hash_hex: None,
+                            revealed,
+                            predicted_price,
+                        },
                     },
-                })
+                )
                 .collect();
 
             let mut t = RoundTranscript {

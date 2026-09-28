@@ -1,3 +1,4 @@
+﻿// SPDX-License-Identifier: MIT
 use super::*;
 
 #[test]
@@ -280,7 +281,7 @@ fn test_precision_remainder_3way_tie_uneven_pot() {
     assert_eq!(client.get_pending_winnings(&bob), pot_per_winner); // 33_3333333
     assert_eq!(client.get_pending_winnings(&charlie), pot_per_winner); // 33_3333333
 
-    // Verify full pot accounting: 33_3333334 + 33_3333333 + 33_3333333 = 100_0000000 ✓
+    // Verify full pot accounting: 33_3333334 + 33_3333333 + 33_3333333 = 100_0000000 âœ“
 }
 
 #[test]
@@ -399,7 +400,7 @@ fn test_precision_remainder_5way_tie() {
     assert_eq!(client.get_pending_winnings(&user4), pot_per_winner); // 20_6000000
     assert_eq!(client.get_pending_winnings(&user5), pot_per_winner); // 20_6000000
 
-    // Verify full pot accounting: 23_6000000 + 20_6000000*4 = 103_0000000 ✓
+    // Verify full pot accounting: 23_6000000 + 20_6000000*4 = 103_0000000 âœ“
 }
 
 #[test]
@@ -630,7 +631,7 @@ fn test_precision_remainder_3way_tie_goes_to_lexicographically_lowest_winner() {
 
     // per_winner = 100_0000000 / 3 = 33_3333333, remainder = 1.
     // The lowest-address winner gets the remainder regardless of stake size
-    // or bet order — `lowest` staked the *most* here specifically to prove
+    // or bet order â€” `lowest` staked the *most* here specifically to prove
     // the remainder follows address order, not stake size.
     assert_eq!(client.get_pending_winnings(&lowest), 33_3333334);
     assert_eq!(client.get_pending_winnings(&mid), 33_3333333);
