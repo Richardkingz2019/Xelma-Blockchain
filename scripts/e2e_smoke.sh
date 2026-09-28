@@ -179,12 +179,21 @@ echo "network_id (sha256): $NETWORK_ID_HEX"
 
 # ── 3. Deploy ────────────────────────────────────────────────────────────
 step "Deploying contract"
+# Optimize WASM if possible to reduce simulation/deployment CPU budget consumption
+OPT_WASM="${WASM_PATH%.wasm}.optimized.wasm"
+if stellar contract optimize --wasm "$WASM_PATH" >/dev/null 2>&1; then
+  if [[ -f "$OPT_WASM" ]]; then
+    WASM_PATH="$OPT_WASM"
+    echo "Using optimized WASM for deploy: $WASM_PATH ($(wc -c < "$WASM_PATH") bytes)"
+  fi
+fi
+
 # The container reports RPC health before its soroban network resource-config
 # upgrade has necessarily finished applying, which can make this first
 # on-chain write fail with a transient `Budget/ExceededLimit` error. Retry
-# this specific step a few times rather than chasing longer fixed sleeps.
+# this specific step up to 20 times rather than chasing longer fixed sleeps.
 CONTRACT_ID=""
-for attempt in $(seq 1 5); do
+for attempt in $(seq 1 20); do
   if CONTRACT_ID="$(stellar contract deploy --wasm "$WASM_PATH" --source "$ADMIN_ID" --network "$NETWORK" -- | tail -n1)" \
       && [[ "$CONTRACT_ID" =~ ^C[A-Z0-9]{55}$ ]]; then
     break

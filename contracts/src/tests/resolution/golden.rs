@@ -1,14 +1,14 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 use super::*;
 use alloc::vec;
 
 // ============================================================================
-// GOLDEN VECTOR TESTS â€” Pure settlement_math verification (Issue #257)
+// GOLDEN VECTOR TESTS — Pure settlement_math verification (Issue #257)
 // ============================================================================
 // These tests verify settlement_math functions with known inputs and expected
-// outputs. They do NOT require the Soroban test harness â€” only std::prelude.
+// outputs. They do NOT require the Soroban test harness — only std::prelude.
 
-// â”€â”€â”€ Price direction golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Price direction golden vectors ─────────────────────────────────────────
 
 #[test]
 fn golden_price_direction_up() {
@@ -46,7 +46,7 @@ fn golden_price_direction_large_values() {
     );
 }
 
-// â”€â”€â”€ One-sided pool golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── One-sided pool golden vectors ──────────────────────────────────────────
 
 #[test]
 fn golden_is_one_sided_only_up() {
@@ -68,7 +68,7 @@ fn golden_not_one_sided_both_empty() {
     assert!(!is_one_sided_pool(0, 0));
 }
 
-// â”€â”€â”€ Fee math golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Fee math golden vectors ────────────────────────────────────────────────
 
 #[test]
 fn golden_updown_fee_1pct_conservation() {
@@ -133,7 +133,7 @@ fn golden_precision_fee_negative_pot() {
     assert_eq!(dist, -10);
 }
 
-// â”€â”€â”€ Deviation math golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Deviation math golden vectors ──────────────────────────────────────────
 
 #[test]
 fn golden_deviation_5pct_up() {
@@ -165,7 +165,7 @@ fn golden_deviation_tiny() {
     assert_eq!(bps, 0);
 }
 
-// â”€â”€â”€ Total pot golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Total pot golden vectors ───────────────────────────────────────────────
 
 #[test]
 fn golden_total_pot_updown() {
@@ -174,19 +174,28 @@ fn golden_total_pot_updown() {
     assert_eq!(total_pot_updown(1_000_000, 500_000), 1_500_000);
 }
 
-// â”€â”€â”€ UpDown payout golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── UpDown payout golden vectors ───────────────────────────────────────────
 
 #[test]
 fn golden_updown_price_up_two_winners() {
     let positions = vec![
-        UpDownPosition { index: 0, amount: 100, side_up: true },
-        UpDownPosition { index: 1, amount: 200, side_up: true },
-        UpDownPosition { index: 2, amount: 150, side_up: false },
+        UpDownPosition {
+            index: 0,
+            amount: 100,
+            side_up: true,
+        },
+        UpDownPosition {
+            index: 1,
+            amount: 200,
+            side_up: true,
+        },
+        UpDownPosition {
+            index: 2,
+            amount: 150,
+            side_up: false,
+        },
     ];
-    let results = compute_updown_payouts(
-        &positions, 1_0000000, 1_5000000, 300, 150, None,
-    )
-    .unwrap();
+    let results = compute_updown_payouts(&positions, 1_0000000, 1_5000000, 300, 150, None).unwrap();
 
     assert_eq!(results.len(), 3);
     assert_eq!(results[0].payout, 150);
@@ -196,19 +205,27 @@ fn golden_updown_price_up_two_winners() {
     assert!(results[1].is_winner);
     assert_eq!(results[2].payout, 0);
     assert!(!results[2].is_winner);
-    assert_eq!(results[0].payout + results[1].payout + results[2].payout, 450);
+    assert_eq!(
+        results[0].payout + results[1].payout + results[2].payout,
+        450
+    );
 }
 
 #[test]
 fn golden_updown_price_down_single_winner() {
     let positions = vec![
-        UpDownPosition { index: 0, amount: 200, side_up: false },
-        UpDownPosition { index: 1, amount: 100, side_up: true },
+        UpDownPosition {
+            index: 0,
+            amount: 200,
+            side_up: false,
+        },
+        UpDownPosition {
+            index: 1,
+            amount: 100,
+            side_up: true,
+        },
     ];
-    let results = compute_updown_payouts(
-        &positions, 2_0000000, 1_0000000, 100, 200, None,
-    )
-    .unwrap();
+    let results = compute_updown_payouts(&positions, 2_0000000, 1_0000000, 100, 200, None).unwrap();
 
     assert_eq!(results[0].payout, 300);
     assert!(results[0].is_winner);
@@ -220,13 +237,18 @@ fn golden_updown_price_down_single_winner() {
 #[test]
 fn golden_updown_price_unchanged_refunds_all() {
     let positions = vec![
-        UpDownPosition { index: 0, amount: 100, side_up: true },
-        UpDownPosition { index: 1, amount: 50, side_up: false },
+        UpDownPosition {
+            index: 0,
+            amount: 100,
+            side_up: true,
+        },
+        UpDownPosition {
+            index: 1,
+            amount: 50,
+            side_up: false,
+        },
     ];
-    let results = compute_updown_payouts(
-        &positions, 1_0000000, 1_0000000, 100, 50, None,
-    )
-    .unwrap();
+    let results = compute_updown_payouts(&positions, 1_0000000, 1_0000000, 100, 50, None).unwrap();
 
     assert_eq!(results[0].payout, 100);
     assert!(results[0].is_refund);
@@ -238,13 +260,18 @@ fn golden_updown_price_unchanged_refunds_all() {
 #[test]
 fn golden_updown_one_sided_refunds_all() {
     let positions = vec![
-        UpDownPosition { index: 0, amount: 100, side_up: true },
-        UpDownPosition { index: 1, amount: 200, side_up: true },
+        UpDownPosition {
+            index: 0,
+            amount: 100,
+            side_up: true,
+        },
+        UpDownPosition {
+            index: 1,
+            amount: 200,
+            side_up: true,
+        },
     ];
-    let results = compute_updown_payouts(
-        &positions, 1_0000000, 1_5000000, 300, 0, None,
-    )
-    .unwrap();
+    let results = compute_updown_payouts(&positions, 1_0000000, 1_5000000, 300, 0, None).unwrap();
 
     assert_eq!(results[0].payout, 100);
     assert!(results[0].is_refund);
@@ -255,13 +282,19 @@ fn golden_updown_one_sided_refunds_all() {
 #[test]
 fn golden_updown_with_1pct_fee() {
     let positions = vec![
-        UpDownPosition { index: 0, amount: 100, side_up: true },
-        UpDownPosition { index: 1, amount: 150, side_up: false },
+        UpDownPosition {
+            index: 0,
+            amount: 100,
+            side_up: true,
+        },
+        UpDownPosition {
+            index: 1,
+            amount: 150,
+            side_up: false,
+        },
     ];
-    let results = compute_updown_payouts(
-        &positions, 1_0000000, 1_5000000, 300, 150, Some(100),
-    )
-    .unwrap();
+    let results =
+        compute_updown_payouts(&positions, 1_0000000, 1_5000000, 300, 150, Some(100)).unwrap();
 
     assert_eq!(results[0].payout, 148);
     assert!(results[0].is_winner);
@@ -271,13 +304,18 @@ fn golden_updown_with_1pct_fee() {
 #[test]
 fn golden_updown_empty_winning_pool_refunds() {
     let positions = vec![
-        UpDownPosition { index: 0, amount: 100, side_up: false },
-        UpDownPosition { index: 1, amount: 50, side_up: false },
+        UpDownPosition {
+            index: 0,
+            amount: 100,
+            side_up: false,
+        },
+        UpDownPosition {
+            index: 1,
+            amount: 50,
+            side_up: false,
+        },
     ];
-    let results = compute_updown_payouts(
-        &positions, 1_0000000, 1_5000000, 0, 150, None,
-    )
-    .unwrap();
+    let results = compute_updown_payouts(&positions, 1_0000000, 1_5000000, 0, 150, None).unwrap();
 
     assert_eq!(results[0].payout, 100);
     assert!(results[0].is_refund);
@@ -285,14 +323,29 @@ fn golden_updown_empty_winning_pool_refunds() {
     assert!(results[1].is_refund);
 }
 
-// â”€â”€â”€ Precision winner determination golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Precision winner determination golden vectors ──────────────────────────
 
 #[test]
 fn golden_precision_winners_single_clear_winner() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 2297, amount: 100, revealed: true },
-        PrecisionEntry { index: 1, predicted_price: 2300, amount: 150, revealed: true },
-        PrecisionEntry { index: 2, predicted_price: 2500, amount: 50, revealed: true },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 2297,
+            amount: 100,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 2300,
+            amount: 150,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 2,
+            predicted_price: 2500,
+            amount: 50,
+            revealed: true,
+        },
     ];
     let result = find_precision_winners(&entries, 2298);
     assert_eq!(result.winner_indices, vec![0]);
@@ -304,8 +357,18 @@ fn golden_precision_winners_single_clear_winner() {
 #[test]
 fn golden_precision_winners_two_way_tie() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 2100, amount: 100, revealed: true },
-        PrecisionEntry { index: 1, predicted_price: 2300, amount: 150, revealed: true },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 2100,
+            amount: 100,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 2300,
+            amount: 150,
+            revealed: true,
+        },
     ];
     let result = find_precision_winners(&entries, 2200);
     assert_eq!(result.winner_indices.len(), 2);
@@ -315,8 +378,18 @@ fn golden_precision_winners_two_way_tie() {
 #[test]
 fn golden_precision_winners_exact_match() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 2250, amount: 100, revealed: true },
-        PrecisionEntry { index: 1, predicted_price: 2200, amount: 100, revealed: true },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 2250,
+            amount: 100,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 2200,
+            amount: 100,
+            revealed: true,
+        },
     ];
     let result = find_precision_winners(&entries, 2250);
     assert_eq!(result.winner_indices, vec![0]);
@@ -325,8 +398,18 @@ fn golden_precision_winners_exact_match() {
 #[test]
 fn golden_precision_winners_unrevealed_loses() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 2297, amount: 100, revealed: false },
-        PrecisionEntry { index: 1, predicted_price: 4000, amount: 100, revealed: true },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 2297,
+            amount: 100,
+            revealed: false,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 4000,
+            amount: 100,
+            revealed: true,
+        },
     ];
     let result = find_precision_winners(&entries, 2298);
     assert_eq!(result.winner_indices, vec![1]);
@@ -335,8 +418,18 @@ fn golden_precision_winners_unrevealed_loses() {
 #[test]
 fn golden_precision_winners_all_unrevealed() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 0, amount: 100, revealed: false },
-        PrecisionEntry { index: 1, predicted_price: 0, amount: 50, revealed: false },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 0,
+            amount: 100,
+            revealed: false,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 0,
+            amount: 50,
+            revealed: false,
+        },
     ];
     let result = find_precision_winners(&entries, 2298);
     assert!(result.winner_indices.is_empty());
@@ -351,7 +444,7 @@ fn golden_precision_winners_empty() {
     assert_eq!(result.total_pot, 0);
 }
 
-// â”€â”€â”€ Pot splitting golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Pot splitting golden vectors ───────────────────────────────────────────
 
 #[test]
 fn golden_split_pot_even() {
@@ -391,14 +484,29 @@ fn golden_split_pot_zero_winners() {
     assert!(payouts.is_empty());
 }
 
-// â”€â”€â”€ Composite Precision payout golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Composite Precision payout golden vectors ──────────────────────────────
 
 #[test]
 fn golden_precision_payouts_single_winner_no_fee() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 2297, amount: 100, revealed: true },
-        PrecisionEntry { index: 1, predicted_price: 2300, amount: 150, revealed: true },
-        PrecisionEntry { index: 2, predicted_price: 2500, amount: 50, revealed: true },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 2297,
+            amount: 100,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 2300,
+            amount: 150,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 2,
+            predicted_price: 2500,
+            amount: 50,
+            revealed: true,
+        },
     ];
     let results = compute_precision_payouts(&entries, 2298, None).unwrap();
 
@@ -415,9 +523,24 @@ fn golden_precision_payouts_single_winner_no_fee() {
 #[test]
 fn golden_precision_payouts_two_way_tie_no_fee() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 2100, amount: 100, revealed: true },
-        PrecisionEntry { index: 1, predicted_price: 2300, amount: 150, revealed: true },
-        PrecisionEntry { index: 2, predicted_price: 2500, amount: 50, revealed: true },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 2100,
+            amount: 100,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 2300,
+            amount: 150,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 2,
+            predicted_price: 2500,
+            amount: 50,
+            revealed: true,
+        },
     ];
     let results = compute_precision_payouts(&entries, 2200, None).unwrap();
 
@@ -428,17 +551,24 @@ fn golden_precision_payouts_two_way_tie_no_fee() {
     assert!(results[1].is_winner);
     assert_eq!(results[2].payout, 0);
     assert!(!results[2].is_winner);
-    assert_eq!(
-        results.iter().map(|r| r.payout).sum::<i128>(),
-        300
-    );
+    assert_eq!(results.iter().map(|r| r.payout).sum::<i128>(), 300);
 }
 
 #[test]
 fn golden_precision_payouts_all_unrevealed_refunds() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 0, amount: 100, revealed: false },
-        PrecisionEntry { index: 1, predicted_price: 0, amount: 50, revealed: false },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 0,
+            amount: 100,
+            revealed: false,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 0,
+            amount: 50,
+            revealed: false,
+        },
     ];
     let results = compute_precision_payouts(&entries, 2298, None).unwrap();
 
@@ -452,8 +582,18 @@ fn golden_precision_payouts_all_unrevealed_refunds() {
 #[test]
 fn golden_precision_payouts_with_1pct_fee() {
     let entries = vec![
-        PrecisionEntry { index: 0, predicted_price: 2250, amount: 100, revealed: true },
-        PrecisionEntry { index: 1, predicted_price: 2200, amount: 100, revealed: true },
+        PrecisionEntry {
+            index: 0,
+            predicted_price: 2250,
+            amount: 100,
+            revealed: true,
+        },
+        PrecisionEntry {
+            index: 1,
+            predicted_price: 2200,
+            amount: 100,
+            revealed: true,
+        },
     ];
     let results = compute_precision_payouts(&entries, 2250, Some(100)).unwrap();
 
@@ -470,7 +610,7 @@ fn golden_precision_payouts_empty() {
     assert!(results.is_empty());
 }
 
-// â”€â”€â”€ Conservation invariant: UpDown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Conservation invariant: UpDown ─────────────────────────────────────────
 
 #[test]
 fn golden_updown_conservation_invariant() {
@@ -492,29 +632,58 @@ fn golden_updown_conservation_invariant() {
         let one_sided = is_one_sided_pool(*pool_up, *pool_down);
 
         let positions = vec![
-            UpDownPosition { index: 0, amount: *pool_up, side_up: true },
-            UpDownPosition { index: 1, amount: *pool_down, side_up: false },
+            UpDownPosition {
+                index: 0,
+                amount: *pool_up,
+                side_up: true,
+            },
+            UpDownPosition {
+                index: 1,
+                amount: *pool_down,
+                side_up: false,
+            },
         ];
-        let results =
-            compute_updown_payouts(&positions, *start, *final_price, *pool_up, *pool_down, *fee_bps)
-                .unwrap();
+        let results = compute_updown_payouts(
+            &positions,
+            *start,
+            *final_price,
+            *pool_up,
+            *pool_down,
+            *fee_bps,
+        )
+        .unwrap();
 
         let sum_payouts: i128 = results.iter().map(|r| r.payout).sum();
 
         if direction == PriceDirection::Unchanged || one_sided || {
-            let wp = if direction == PriceDirection::Up { *pool_up } else { *pool_down };
+            let wp = if direction == PriceDirection::Up {
+                *pool_up
+            } else {
+                *pool_down
+            };
             wp == 0
         } {
             assert_eq!(
                 sum_payouts,
                 *pool_up + *pool_down,
                 "Refund scenario: conservation failed for ({}, {}, {}, {})",
-                pool_up, pool_down, start, final_price
+                pool_up,
+                pool_down,
+                start,
+                final_price
             );
         } else {
             let (_, _, fee) = compute_updown_fee(
-                if direction == PriceDirection::Up { *pool_up } else { *pool_down },
-                if direction == PriceDirection::Up { *pool_down } else { *pool_up },
+                if direction == PriceDirection::Up {
+                    *pool_up
+                } else {
+                    *pool_down
+                },
+                if direction == PriceDirection::Up {
+                    *pool_down
+                } else {
+                    *pool_up
+                },
                 *fee_bps,
             )
             .unwrap();
@@ -527,38 +696,82 @@ fn golden_updown_conservation_invariant() {
     }
 }
 
-// â”€â”€â”€ Conservation invariant: Precision â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Conservation invariant: Precision ──────────────────────────────────────
 
 #[test]
 fn golden_precision_conservation_invariant() {
     let scenarios: alloc::vec::Vec<(alloc::vec::Vec<PrecisionEntry>, u128, Option<u32>)> = vec![
         (
             vec![
-                PrecisionEntry { index: 0, predicted_price: 100, amount: 200, revealed: true },
-                PrecisionEntry { index: 1, predicted_price: 300, amount: 100, revealed: true },
+                PrecisionEntry {
+                    index: 0,
+                    predicted_price: 100,
+                    amount: 200,
+                    revealed: true,
+                },
+                PrecisionEntry {
+                    index: 1,
+                    predicted_price: 300,
+                    amount: 100,
+                    revealed: true,
+                },
             ],
-            100, None,
+            100,
+            None,
         ),
         (
             vec![
-                PrecisionEntry { index: 0, predicted_price: 2100, amount: 100, revealed: true },
-                PrecisionEntry { index: 1, predicted_price: 2300, amount: 150, revealed: true },
+                PrecisionEntry {
+                    index: 0,
+                    predicted_price: 2100,
+                    amount: 100,
+                    revealed: true,
+                },
+                PrecisionEntry {
+                    index: 1,
+                    predicted_price: 2300,
+                    amount: 150,
+                    revealed: true,
+                },
             ],
-            2200, Some(100),
+            2200,
+            Some(100),
         ),
         (
             vec![
-                PrecisionEntry { index: 0, predicted_price: 0, amount: 50, revealed: false },
-                PrecisionEntry { index: 1, predicted_price: 0, amount: 100, revealed: false },
+                PrecisionEntry {
+                    index: 0,
+                    predicted_price: 0,
+                    amount: 50,
+                    revealed: false,
+                },
+                PrecisionEntry {
+                    index: 1,
+                    predicted_price: 0,
+                    amount: 100,
+                    revealed: false,
+                },
             ],
-            2298, None,
+            2298,
+            None,
         ),
         (
             vec![
-                PrecisionEntry { index: 0, predicted_price: 2297, amount: 100, revealed: true },
-                PrecisionEntry { index: 1, predicted_price: 0, amount: 200, revealed: false },
+                PrecisionEntry {
+                    index: 0,
+                    predicted_price: 2297,
+                    amount: 100,
+                    revealed: true,
+                },
+                PrecisionEntry {
+                    index: 1,
+                    predicted_price: 0,
+                    amount: 200,
+                    revealed: false,
+                },
             ],
-            2298, None,
+            2298,
+            None,
         ),
         (vec![], 2298, None),
     ];
@@ -572,7 +785,8 @@ fn golden_precision_conservation_invariant() {
             assert!(
                 sum_payouts <= total_stakes,
                 "Precision payouts exceed total stakes: {} > {}",
-                sum_payouts, total_stakes
+                sum_payouts,
+                total_stakes
             );
             for r in &results {
                 assert!(r.payout >= 0, "Negative payout detected");

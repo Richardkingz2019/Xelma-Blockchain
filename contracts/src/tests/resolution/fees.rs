@@ -1,13 +1,13 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 // ============================================================================
 // These tests exercise the optional protocol fee: default (ProtocolFeeBps
 // storage key absent) is byte-for-byte the pre-#162 behaviour; activating
 // the fee routes `fee = total_pot * bps / 10_000` to the on-chain treasury
 // while preserving the conservation invariant
-//     Î£ payouts + treasury_growth == total_pot
+//     Σ payouts + treasury_growth == total_pot
 // for every competitive settlement path (UpDown indexed/legacy, Precision
 // indexed/legacy). Refund paths (price-unchanged, one-sided, min-participants,
-// admin cancel) MUST NOT emit a fee event â€” and the treasury MUST stay flat.
+// admin cancel) MUST NOT emit a fee event — and the treasury MUST stay flat.
 //
 // The 10% hard cap is enforced at schedule time; timelock semantics tested
 // in `config_timelock.rs::test_protocol_fee_timelock_*`.
@@ -47,7 +47,8 @@ fn test_protocol_fee_disabled_default_is_no_behaviour_change() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
 
     assert_eq!(
         sum_pending_payouts(&env, &client.address, &[alice.clone(), bob.clone()]),
@@ -98,7 +99,8 @@ fn test_protocol_fee_updown_indexed_conservation() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
 
     assert_eq!(count_protocol_fee_events(&env), 1);
     let events = collect_protocol_fee_events(&env);
@@ -194,7 +196,8 @@ fn test_protocol_fee_updown_legacy_conservation() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
 
     let payouts = sum_pending_payouts(&env, &client.address, &[alice.clone(), bob.clone()]);
     assert_eq!(payouts, 142_500_0000i128);
@@ -243,7 +246,8 @@ fn test_protocol_fee_precision_indexed_conservation() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
 
     let payouts = sum_pending_payouts(
         &env,
@@ -329,7 +333,8 @@ fn test_protocol_fee_precision_legacy_conservation() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
 
     let payouts = sum_pending_payouts(
         &env,
@@ -383,7 +388,8 @@ fn test_protocol_fee_thin_losing_pool_updown() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
 
     let payouts = sum_pending_payouts(&env, &client.address, &[alice.clone(), bob.clone()]);
     assert_eq!(
@@ -468,7 +474,8 @@ fn test_protocol_fee_not_collected_on_refund_paths() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
 
     assert_eq!(
         count_protocol_fee_events(&env),
@@ -522,7 +529,8 @@ fn test_protocol_fee_not_collected_on_one_sided_pool_refund() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
 
     assert_eq!(
         count_protocol_fee_events(&env),
@@ -580,7 +588,8 @@ fn test_protocol_fee_withdrawal_to_recipient() {
         network_id: env.ledger().network_id(),
         contract_addr: contract_id.clone(),
         confidence: None,
-        attestation: None,    });
+        attestation: None,
+    });
     assert_eq!(client.get_protocol_fee_treasury(), 15_000_0000i128);
 
     let starting_bal = client.balance(&treasury_account);
