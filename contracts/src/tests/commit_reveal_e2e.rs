@@ -57,7 +57,7 @@ use soroban_sdk::xdr::ToXdr;
 use soroban_sdk::{
     symbol_short,
     testutils::{Address as _, Events as _, Ledger as _},
-    Address, Bytes, BytesN, Env, TryFromVal,
+    Address, Bytes, BytesN, Env, TryFromVal, TryIntoVal,
 };
 
 use crate::contract::{VirtualTokenContract, VirtualTokenContractClient};

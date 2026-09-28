@@ -170,18 +170,21 @@ pub fn create_round(env: Env, start_price: u128, mode: Option<u32>) -> Result<()
     // be settled unambiguously at all, so it is refused at creation instead.
     // Retry once the ledger has advanced.
     let start_ledger = env.ledger().sequence();
-    if env
+    _extend_persistent_ttl(&env, &DataKeyCore::LastStartLedger);
+    if let Some(prev_start) = env
         .storage()
         .persistent()
-        .has(&DataKeyScoped::RoundStartLedger(start_ledger))
+        .get::<_, u32>(&DataKeyCore::LastStartLedger)
     {
-        _emit_action_rejected(
-            &env,
-            &admin,
-            symbol_short!("create"),
-            ContractError::RoundStartLedgerReused,
-        );
-        return Err(ContractError::RoundStartLedgerReused);
+        if prev_start == start_ledger {
+            _emit_action_rejected(
+                &env,
+                &admin,
+                symbol_short!("create"),
+                ContractError::RoundStartLedgerReused,
+            );
+            return Err(ContractError::RoundStartLedgerReused);
+        }
     }
 
     // Generate unique round ID
@@ -226,9 +229,10 @@ pub fn create_round(env: Env, start_price: u128, mode: Option<u32>) -> Result<()
     _extend_persistent_ttl(&env, &DataKeyCore::ActiveRound);
 
     // Claim this ledger sequence for this round, so no later round can reuse it.
-    let start_ledger_key = DataKeyScoped::RoundStartLedger(start_ledger);
-    env.storage().persistent().set(&start_ledger_key, &round_id);
-    _extend_persistent_ttl(&env, &start_ledger_key);
+    env.storage()
+        .persistent()
+        .set(&DataKeyCore::LastStartLedger, &start_ledger);
+    _extend_persistent_ttl(&env, &DataKeyCore::LastStartLedger);
 
     #[allow(deprecated)]
     env.events().publish(

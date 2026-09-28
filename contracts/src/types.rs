@@ -118,6 +118,8 @@ pub enum DataKeyCore {
     /// up the next round without re-specifying `start_price` / `mode` each
     /// time. Absent means no template is configured.
     RoundTemplate,
+    /// Last round start ledger sequence number (prevents same-ledger recreation)
+    LastStartLedger,
     /// Admin-configured multi-feed oracle quorum parameters.
     OracleQuorum,
     /// Announced next schema version for migration preview.
