@@ -517,24 +517,6 @@ pub fn resolve_round(env: Env, payload: OraclePayload) -> Result<(), ContractErr
         _emit_action_rejected(&env, &oracle, symbol_short!("resolve"), e);
     })?;
 
-    // Heartbeat health enforcement (Issue #264) — must come before any
-    // state mutation (nonce consumption) so a stale oracle cannot race
-    // the admin override. An armed one-shot override bypasses the block
-    // and is consumed here; the `hoverride` event is published once the
-    // round id is known.
-    let hb_config = _load_hb_config(&env);
-    let hb_blocked = _check_heartbeat_health_blocked(&env, &hb_config);
-    let consumed_hb_override = hb_blocked && hb_config.override_armed;
-    if hb_blocked && !hb_config.override_armed {
-        _emit_action_rejected(
-            &env,
-            &oracle,
-            symbol_short!("resolve"),
-            ContractError::OracleHeartbeatUnhealthy,
-        );
-        return Err(ContractError::OracleHeartbeatUnhealthy);
-    }
-
     let round: Round = env
         .storage()
         .persistent()
@@ -791,7 +773,7 @@ pub fn resolve_round(env: Env, payload: OraclePayload) -> Result<(), ContractErr
     // that the oracle heartbeat is live before allowing settlement.
     let hb_config = crate::admin::_load_hb_config(&env);
 
-    if hb_config.strict_mode && !consumed_hb_override {
+    if hb_config.strict_mode {
         let hb_blocked = _check_heartbeat_health_blocked(&env, &hb_config);
 
         if hb_blocked {
