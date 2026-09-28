@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 use crate::contract::{VirtualTokenContract, VirtualTokenContractClient};
 use crate::types::{BetSide, OraclePayload, RoundArchiveStatus};
 use soroban_sdk::testutils::{Address as _, Ledger as _};
@@ -29,7 +29,7 @@ fn resolve_active_round(
     round_id
 }
 
-// â”€â”€â”€ Participation recorded after resolve â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Participation recorded after resolve ───────────────────────────────────
 
 #[test]
 fn test_archived_participation_after_resolve() {
@@ -57,11 +57,17 @@ fn test_archived_participation_after_resolve() {
 
     assert_eq!(alice_history.len(), 1);
     assert_eq!(alice_history.get(0).unwrap().round_id, round_id);
-    assert_eq!(alice_history.get(0).unwrap().status, RoundArchiveStatus::Resolved);
+    assert_eq!(
+        alice_history.get(0).unwrap().status,
+        RoundArchiveStatus::Resolved
+    );
 
     assert_eq!(bob_history.len(), 1);
     assert_eq!(bob_history.get(0).unwrap().round_id, round_id);
-    assert_eq!(bob_history.get(0).unwrap().status, RoundArchiveStatus::Resolved);
+    assert_eq!(
+        bob_history.get(0).unwrap().status,
+        RoundArchiveStatus::Resolved
+    );
 }
 
 #[test]
@@ -86,7 +92,10 @@ fn test_archived_participation_after_cancel() {
     let history = client.get_user_archive_history(&alice, &0, &10);
     assert_eq!(history.len(), 1);
     assert_eq!(history.get(0).unwrap().round_id, round_id);
-    assert_eq!(history.get(0).unwrap().status, RoundArchiveStatus::Cancelled);
+    assert_eq!(
+        history.get(0).unwrap().status,
+        RoundArchiveStatus::Cancelled
+    );
 }
 
 #[test]
@@ -112,10 +121,13 @@ fn test_archived_participation_after_fallback_refund() {
     let history = client.get_user_archive_history(&user, &0, &10);
     assert_eq!(history.len(), 1);
     assert_eq!(history.get(0).unwrap().round_id, round_id);
-    assert_eq!(history.get(0).unwrap().status, RoundArchiveStatus::FallbackRefund);
+    assert_eq!(
+        history.get(0).unwrap().status,
+        RoundArchiveStatus::FallbackRefund
+    );
 }
 
-// â”€â”€â”€ User with no participation returns empty â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── User with no participation returns empty ───────────────────────────────
 
 #[test]
 fn test_archived_participation_no_history() {
@@ -155,7 +167,7 @@ fn test_archived_participation_non_participant_after_round() {
     assert_eq!(bob_history.len(), 0);
 }
 
-// â”€â”€â”€ Pagination: ordering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Pagination: ordering ───────────────────────────────────────────────────
 
 #[test]
 fn test_archived_participation_newest_first() {
@@ -191,7 +203,7 @@ fn test_archived_participation_newest_first() {
     }
 }
 
-// â”€â”€â”€ Pagination: offset / limit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Pagination: offset / limit ─────────────────────────────────────────────
 
 #[test]
 fn test_archived_participation_page_respects_offset_and_limit() {
@@ -254,7 +266,7 @@ fn test_archived_participation_full_page_matches_all() {
     assert_eq!(page.len(), 3);
 }
 
-// â”€â”€â”€ Pagination: bounds â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Pagination: bounds ─────────────────────────────────────────────────────
 
 #[test]
 fn test_archived_participation_offset_past_end_is_empty() {
@@ -330,7 +342,7 @@ fn test_archived_participation_over_limit_rejected() {
     assert_eq!(page.len(), 3);
 }
 
-// â”€â”€â”€ Multi-user isolation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Multi-user isolation ───────────────────────────────────────────────────
 
 #[test]
 fn test_archived_participation_multi_user_isolation() {
@@ -364,7 +376,7 @@ fn test_archived_participation_multi_user_isolation() {
     assert_eq!(bob_hist.get(0).unwrap().round_id, round2_id);
 }
 
-// â”€â”€â”€ Precision mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Precision mode ─────────────────────────────────────────────────────────
 
 #[test]
 fn test_archived_participation_precision_mode() {
