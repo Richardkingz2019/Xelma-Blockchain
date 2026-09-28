@@ -424,6 +424,16 @@ fn test_resolve_round_fails_without_oracle_auth() {
         },
     }]);
     client.initialize(&admin, &oracle);
+
+    env.mock_auths(&[soroban_sdk::testutils::MockAuth {
+        address: &admin,
+        invoke: &soroban_sdk::testutils::MockAuthInvoke {
+            contract: &contract_id,
+            fn_name: "update_oracle_heartbeat",
+            args: (0u32,).into_val(&env),
+            sub_invokes: &[],
+        },
+    }]);
     client.update_oracle_heartbeat(&0u32);
 
     env.mock_auths(&[soroban_sdk::testutils::MockAuth {
