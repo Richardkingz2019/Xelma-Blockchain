@@ -852,15 +852,9 @@ fn test_commit_reveal_e2e_mixed_reveal_forfeits_unrevealed_to_pot() {
 
     let forfeits = env.events().all().iter().filter(|(_, topics, data)| {
         topics.len() == 2
-            && topics
-                .get(0)
-                .and_then(|topic| soroban_sdk::Symbol::try_from_val(&env, &topic).ok())
-                == Some(symbol_short!("forfeit"))
-            && topics
-                .get(1)
-                .and_then(|topic| soroban_sdk::Symbol::try_from_val(&env, &topic).ok())
-                == Some(symbol_short!("predict"))
-            && <(Address, u64, i128)>::try_from_val(&env, data) == Ok((bob.clone(), 1u64, BOB_BET))
+            && topics.get(0).unwrap().try_into_val(&env) == Ok(symbol_short!("forfeit"))
+            && topics.get(1).unwrap().try_into_val(&env) == Ok(symbol_short!("predict"))
+            && data.try_into_val(&env) == Ok((bob.clone(), round.round_id, BOB_BET))
     });
     assert_eq!(
         forfeits.count(),

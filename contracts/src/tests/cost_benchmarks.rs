@@ -79,6 +79,7 @@ fn setup() -> (
     VirtualTokenContractClient<'static>,
 ) {
     let env = Env::default();
+    env.cost_estimate().budget().reset_unlimited();
     env.mock_all_auths();
     let contract_id = env.register(VirtualTokenContract, ());
     let client = VirtualTokenContractClient::new(&env, &contract_id);
@@ -261,6 +262,7 @@ fn bench_cost_resolve_round_medium_set() {
     client.create_round(&1_0000000u128, &None);
     let round = client.get_active_round().unwrap();
 
+    env.cost_estimate().budget().reset_unlimited();
     for i in 0..25 {
         let user = Address::generate(&env);
         client.mint_initial(&user);
@@ -295,6 +297,7 @@ fn bench_cost_resolve_round_max_cap() {
     client.create_round(&1_0000000u128, &None);
     let round = client.get_active_round().unwrap();
 
+    env.cost_estimate().budget().reset_unlimited();
     for i in 0..100 {
         let user = Address::generate(&env);
         client.mint_initial(&user);
@@ -329,6 +332,7 @@ fn bench_cost_resolve_precision_round_max_cap() {
     client.create_round(&1_0000000u128, &Some(1));
     let round = client.get_active_round().unwrap();
 
+    env.cost_estimate().budget().reset_unlimited();
     for i in 0..100u128 {
         let user = Address::generate(&env);
         client.mint_initial(&user);
@@ -373,6 +377,7 @@ fn bench_cost_resolve_precision_round_max_cap() {
 /// `_update_stats_win` for that many unique users. Returns the generated
 /// addresses.
 fn populate_leaderboard(env: &Env, contract_id: &Address) -> soroban_sdk::Vec<Address> {
+    env.cost_estimate().budget().reset_unlimited();
     let mut addrs = soroban_sdk::Vec::new(env);
     for _ in 0..LEADERBOARD_LIMIT {
         let user = Address::generate(env);

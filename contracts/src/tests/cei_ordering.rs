@@ -69,7 +69,7 @@ fn test_claim_winnings_cei_pending_cleared_after_claim() {
     // Advance past bet window and run window.
     env.ledger().with_mut(|li| {
         li.sequence_number = 130;
-        li.timestamp = 1_000_700;
+        li.timestamp = 1_000_150;
     });
 
     let round = client.get_active_round().expect("round should exist");
@@ -239,7 +239,7 @@ fn test_claim_winnings_respects_runtime_mode() {
 
     env.ledger().with_mut(|li| {
         li.sequence_number = 130;
-        li.timestamp = 1_000_700;
+        li.timestamp = 1_000_150;
     });
     let round = client.get_active_round().expect("round should exist");
     client.resolve_round(&crate::types::OraclePayload {
@@ -273,7 +273,7 @@ fn test_claim_winnings_respects_runtime_mode() {
     client.place_bet(&alice, &500_0000000, &BetSide::Up);
     env.ledger().with_mut(|li| {
         li.sequence_number = 230;
-        li.timestamp = 2_000_700;
+        li.timestamp = 2_000_150;
     });
     let round2 = client.get_active_round().unwrap();
     client.resolve_round(&crate::types::OraclePayload {
@@ -311,7 +311,7 @@ fn test_claim_winnings_respects_runtime_mode() {
     client.place_bet(&alice, &500_0000000, &BetSide::Up);
     env.ledger().with_mut(|li| {
         li.sequence_number = 330;
-        li.timestamp = 3_000_700;
+        li.timestamp = 3_000_150;
     });
     let round3 = client.get_active_round().unwrap();
     client.resolve_round(&crate::types::OraclePayload {

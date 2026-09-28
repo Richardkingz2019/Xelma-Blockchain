@@ -28,7 +28,11 @@ fn test_simulate_payout_updown_with_fees_matches_resolve() {
     client.mint_initial(&bob);
 
     // Set protocol fee to 1% (100 bps)
-    client.set_protocol_fee_bps(&Some(100));
+    env.as_contract(&contract_id, || {
+        env.storage()
+            .persistent()
+            .set(&crate::types::DataKeyCore::ProtocolFeeBps, &100u32);
+    });
 
     client.create_round(&10000, &Some(0)); // UpDown mode
 
