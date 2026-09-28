@@ -554,15 +554,6 @@ pub fn resolve_round(env: Env, payload: OraclePayload) -> Result<(), ContractErr
         return Err(ContractError::OracleNetworkMismatch);
     }
 
-    if consumed_hb_override {
-        crate::admin::_consume_hb_override(&env);
-        #[allow(deprecated)]
-        env.events().publish(
-            (symbol_short!("oracle"), symbol_short!("hoverride")),
-            (round.round_id,),
-        );
-    }
-
     // Verify timestamp is inside the round-relative economic window.
     // This replaces the old absolute-freshness (300 s) check which could
     // accept wrong-phase prices from outside the round's active period.
@@ -771,7 +762,7 @@ pub fn resolve_round(env: Env, payload: OraclePayload) -> Result<(), ContractErr
     //
     // When `HbGateConfig.strict_mode` is enabled, `resolve_round` verifies
     // that the oracle heartbeat is live before allowing settlement.
-    let hb_config = crate::admin::_load_hb_config(&env);
+    let hb_config = _load_hb_config(&env);
 
     if hb_config.strict_mode {
         let hb_blocked = _check_heartbeat_health_blocked(&env, &hb_config);
@@ -958,7 +949,7 @@ pub fn resolve_round_multi(env: Env, payload: MultiFeedPayload) -> Result<(), Co
     }
 
     // ── Oracle heartbeat health gate (parity with single-oracle) ─────────
-    let hb_config = crate::admin::_load_hb_config(&env);
+    let hb_config = _load_hb_config(&env);
     if hb_config.strict_mode {
         let hb_blocked = _check_heartbeat_health_blocked(&env, &hb_config);
         if hb_blocked {
