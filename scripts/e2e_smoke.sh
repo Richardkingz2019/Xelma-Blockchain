@@ -124,7 +124,9 @@ echo "Using WASM: $WASM_PATH ($(wc -c < "$WASM_PATH") bytes)"
 # ── 1. Start local network ───────────────────────────────────────────────
 if [[ "$SKIP_NETWORK_START" != "1" ]]; then
   step "Starting local Soroban network container"
-  stellar container start "$NETWORK"
+  if ! stellar container start "$NETWORK" --limits testnet 2>/dev/null; then
+    stellar container start "$NETWORK"
+  fi
 fi
 
 step "Waiting for RPC health"
@@ -194,8 +196,15 @@ fi
 # this specific step up to 20 times rather than chasing longer fixed sleeps.
 CONTRACT_ID=""
 for attempt in $(seq 1 20); do
-  if CONTRACT_ID="$(stellar contract deploy --wasm "$WASM_PATH" --source "$ADMIN_ID" --network "$NETWORK" -- | tail -n1)" \
-      && [[ "$CONTRACT_ID" =~ ^C[A-Z0-9]{55}$ ]]; then
+  # Upload WASM bytecode first then deploy from hash to stay within per-tx budget limits
+  WASM_HASH="$(stellar contract upload --wasm "$WASM_PATH" --source "$ADMIN_ID" --network "$NETWORK" 2>/dev/null | tail -n1 || true)"
+  if [[ "$WASM_HASH" =~ ^[0-9a-fA-F]{64}$ ]]; then
+    CONTRACT_ID="$(stellar contract deploy --wasm-hash "$WASM_HASH" --source "$ADMIN_ID" --network "$NETWORK" 2>/dev/null | tail -n1 || true)"
+  fi
+  if [[ -z "$CONTRACT_ID" || ! "$CONTRACT_ID" =~ ^C[A-Z0-9]{55}$ ]]; then
+    CONTRACT_ID="$(stellar contract deploy --wasm "$WASM_PATH" --source "$ADMIN_ID" --network "$NETWORK" -- 2>/dev/null | tail -n1 || true)"
+  fi
+  if [[ "$CONTRACT_ID" =~ ^C[A-Z0-9]{55}$ ]]; then
     break
   fi
   echo "Deploy attempt $attempt failed (got: '$CONTRACT_ID'), retrying in 5s..."
