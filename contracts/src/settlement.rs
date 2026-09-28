@@ -522,16 +522,22 @@ pub fn resolve_round(env: Env, payload: OraclePayload) -> Result<(), ContractErr
     // and is consumed here; the `hoverride` event is published once the
     // round id is known.
     let hb_config = _load_hb_config(&env);
-    let hb_blocked = _check_heartbeat_health_blocked(&env, &hb_config);
-    let consumed_hb_override = hb_blocked && hb_config.override_armed;
-    if hb_blocked && !hb_config.override_armed {
-        _emit_action_rejected(
-            &env,
-            &oracle,
-            symbol_short!("resolve"),
-            ContractError::OracleHeartbeatUnhealthy,
-        );
-        return Err(ContractError::OracleHeartbeatUnhealthy);
+    let mut consumed_hb_override = false;
+    if hb_config.strict_mode {
+        let hb_blocked = _check_heartbeat_health_blocked(&env, &hb_config);
+        if hb_blocked {
+            if hb_config.override_armed {
+                consumed_hb_override = true;
+            } else {
+                _emit_action_rejected(
+                    &env,
+                    &oracle,
+                    symbol_short!("resolve"),
+                    ContractError::OracleNotLive,
+                );
+                return Err(ContractError::OracleNotLive);
+            }
+        }
     }
 
     let round: Round = env
@@ -784,41 +790,7 @@ pub fn resolve_round(env: Env, payload: OraclePayload) -> Result<(), ContractErr
     }
     env.storage().persistent().set(&nonce_key, &true);
 
-    // ─── Oracle heartbeat health gate (Issue #264) ──────────────────────────
-    //
-    // When `HbGateConfig.strict_mode` is enabled, `resolve_round` verifies
-    // that the oracle heartbeat is live before allowing settlement.
-    let hb_config = crate::admin::_load_hb_config(&env);
 
-    if hb_config.strict_mode && !consumed_hb_override {
-        let hb_blocked = _check_heartbeat_health_blocked(&env, &hb_config);
-
-        if hb_blocked {
-            if hb_config.override_armed {
-                // Consume the one-shot override
-                crate::admin::_consume_hb_override(&env);
-
-                #[allow(deprecated)]
-                env.events().publish(
-                    (symbol_short!("oracle"), symbol_short!("hoverride")),
-                    (round.round_id,),
-                );
-            } else {
-                #[allow(deprecated)]
-                env.events().publish(
-                    (symbol_short!("oracle"), symbol_short!("hblocked")),
-                    (round.round_id,),
-                );
-                _emit_action_rejected(
-                    &env,
-                    &oracle,
-                    symbol_short!("resolve"),
-                    ContractError::OracleNotLive,
-                );
-                return Err(ContractError::OracleNotLive);
-            }
-        }
-    }
 
     let current_ledger = env.ledger().sequence();
     if current_ledger < round.end_ledger {

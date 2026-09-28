@@ -1,13 +1,14 @@
+﻿// SPDX-License-Identifier: MIT
 use super::*;
 use alloc::vec;
 
 // ============================================================================
-// GOLDEN VECTOR TESTS — Pure settlement_math verification (Issue #257)
+// GOLDEN VECTOR TESTS â€” Pure settlement_math verification (Issue #257)
 // ============================================================================
 // These tests verify settlement_math functions with known inputs and expected
-// outputs. They do NOT require the Soroban test harness — only std::prelude.
+// outputs. They do NOT require the Soroban test harness â€” only std::prelude.
 
-// ─── Price direction golden vectors ─────────────────────────────────────────
+// â”€â”€â”€ Price direction golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_price_direction_up() {
@@ -45,7 +46,7 @@ fn golden_price_direction_large_values() {
     );
 }
 
-// ─── One-sided pool golden vectors ──────────────────────────────────────────
+// â”€â”€â”€ One-sided pool golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_is_one_sided_only_up() {
@@ -67,7 +68,7 @@ fn golden_not_one_sided_both_empty() {
     assert!(!is_one_sided_pool(0, 0));
 }
 
-// ─── Fee math golden vectors ────────────────────────────────────────────────
+// â”€â”€â”€ Fee math golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_updown_fee_1pct_conservation() {
@@ -132,7 +133,7 @@ fn golden_precision_fee_negative_pot() {
     assert_eq!(dist, -10);
 }
 
-// ─── Deviation math golden vectors ──────────────────────────────────────────
+// â”€â”€â”€ Deviation math golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_deviation_5pct_up() {
@@ -164,7 +165,7 @@ fn golden_deviation_tiny() {
     assert_eq!(bps, 0);
 }
 
-// ─── Total pot golden vectors ───────────────────────────────────────────────
+// â”€â”€â”€ Total pot golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_total_pot_updown() {
@@ -173,7 +174,7 @@ fn golden_total_pot_updown() {
     assert_eq!(total_pot_updown(1_000_000, 500_000), 1_500_000);
 }
 
-// ─── UpDown payout golden vectors ───────────────────────────────────────────
+// â”€â”€â”€ UpDown payout golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_updown_price_up_two_winners() {
@@ -284,7 +285,7 @@ fn golden_updown_empty_winning_pool_refunds() {
     assert!(results[1].is_refund);
 }
 
-// ─── Precision winner determination golden vectors ──────────────────────────
+// â”€â”€â”€ Precision winner determination golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_precision_winners_single_clear_winner() {
@@ -350,7 +351,7 @@ fn golden_precision_winners_empty() {
     assert_eq!(result.total_pot, 0);
 }
 
-// ─── Pot splitting golden vectors ───────────────────────────────────────────
+// â”€â”€â”€ Pot splitting golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_split_pot_even() {
@@ -390,7 +391,7 @@ fn golden_split_pot_zero_winners() {
     assert!(payouts.is_empty());
 }
 
-// ─── Composite Precision payout golden vectors ──────────────────────────────
+// â”€â”€â”€ Composite Precision payout golden vectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_precision_payouts_single_winner_no_fee() {
@@ -469,7 +470,7 @@ fn golden_precision_payouts_empty() {
     assert!(results.is_empty());
 }
 
-// ─── Conservation invariant: UpDown ─────────────────────────────────────────
+// â”€â”€â”€ Conservation invariant: UpDown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_updown_conservation_invariant() {
@@ -526,7 +527,7 @@ fn golden_updown_conservation_invariant() {
     }
 }
 
-// ─── Conservation invariant: Precision ──────────────────────────────────────
+// â”€â”€â”€ Conservation invariant: Precision â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[test]
 fn golden_precision_conservation_invariant() {

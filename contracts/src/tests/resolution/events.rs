@@ -1,3 +1,4 @@
+﻿// SPDX-License-Identifier: MIT
 use super::*;
 
 #[test]
@@ -384,7 +385,7 @@ fn test_no_claim_event_when_no_winnings() {
 //   min-participants fallback, admin cancellation).
 // - For Precision losers who only committed and did not reveal, the
 //   `predicted_price` field is published as 0 (the guess is unknowable
-//   on-chain until reveal) — this convention is documented in
+//   on-chain until reveal) â€” this convention is documented in
 //   `docs/EVENT_SCHEMA.md` and matches the contract implementation note
 //   in `_resolve_precision_mode`.
 

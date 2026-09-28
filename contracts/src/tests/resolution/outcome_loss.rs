@@ -1,3 +1,4 @@
+﻿// SPDX-License-Identifier: MIT
 use super::*;
 
 #[test]
@@ -159,7 +160,7 @@ fn test_outcome_loss_event_updown_legacy_path() {
     assert_eq!(round_id, 1u64);
     assert_eq!(mode, 0u32);
     assert_eq!(amount, 50_0000000i128);
-    assert_eq!(side, 1u32, "Bob bet Down → losing side is Down (1)");
+    assert_eq!(side, 1u32, "Bob bet Down â†’ losing side is Down (1)");
     assert_eq!(predicted_price, 0u128);
 }
 
@@ -241,7 +242,7 @@ fn test_outcome_loss_event_precision_indexed_path() {
         by_addr[&bob.to_string().to_string()],
         (150_0000000i128, 2500u128)
     );
-    // Charlie never revealed → predicted_price = 0 (unknown on-chain).
+    // Charlie never revealed â†’ predicted_price = 0 (unknown on-chain).
     assert_eq!(
         by_addr[&charlie.to_string().to_string()],
         (80_0000000i128, 0u128)
